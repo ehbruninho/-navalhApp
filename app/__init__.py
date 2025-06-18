@@ -26,6 +26,7 @@ def create_app(config_class=DevelopmentConfig):
 
     # Importa models para registrar no SQLAlchemy
     from app.models import users  # e outros models
+    from app.models import region
 
     # Registra rotas
     from app.routes.user_routes import user_bp

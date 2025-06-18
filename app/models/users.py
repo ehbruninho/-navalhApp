@@ -63,10 +63,12 @@ class User(UserMixin, db.Model):
             user = session_db.query(cls).filter_by(id=user_id).first()
             if verification_code == user.verification_code:
                 user.is_verified = True
+                user.verification_code = ''
                 session_db.commit()
                 return True
             return False
         except Exception as e:
+            session_db.rollback()
             print(f'Erro ao consultar token! Error: {e}')
         finally:
             session_db.close()
@@ -100,7 +102,7 @@ class User(UserMixin, db.Model):
             return False
         except Exception as e:
             session_db.rollback()
-            print(f'Erro ao salvar Usuario! Error: {e}')
+            print(f'Erro ao salvar perfil do usuário! Error: {e}')
         finally:
             session_db.close()
 
@@ -116,6 +118,22 @@ class User(UserMixin, db.Model):
             return False
         except Exception as e:
             print(f'Erro ao consultar token! Error: {e}')
+            session_db.rollback()
+        finally:
+            session_db.close()
+            
+    @classmethod
+    def update_password(cls, user_id, password):
+        session_db = create_session()
+        try:
+            user = session_db.query(cls).filter_by(id=user_id).first()
+            if user:
+                user.password = generate_password_hash(password)
+                session_db.commit()
+                return True
+            return False
+        except Exception as e:
+            print(f'Erro ao atualizar senha! Error: {e}')
             session_db.rollback()
         finally:
             session_db.close()
