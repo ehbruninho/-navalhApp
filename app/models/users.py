@@ -28,28 +28,94 @@ class User(UserMixin, db.Model):
 
     @classmethod
     def create_user(cls, email, password):
-        session = create_session()
+        session_db = create_session()
         try:
             user = cls(email,password)
-            session.add(user)
-            session['user_id'] = user.id
-            session.commit()
+            session_db.add(user)
+            session_db.commit()
+            email_value = user.email
+            token_value = user.verification_code
+            return email_value, token_value
         except Exception as e:
-            session.rollback()
+            session_db.rollback()
             print(f'Erro ao salvar Usuário! Error: {e}')
+            return None
         finally:
-            session.close()
+            session_db.close()
 
     @classmethod
     def login_user(cls, email, password):
-        session = create_session()
+        session_db = create_session()
         try:
-            user = session.query(cls).filter_by(email=email).first()
+            user = session_db.query(cls).filter_by(email=email).first()
             if user and check_password_hash(user.password, password):
-                session['user_id'] = user.id
-                session['type_user'] = user.type_user
+                return user
+            return None
         except Exception as e:
-            session.rollback()
-            print (f'Erro ao efetuar login! Error: {e}')
+            print(f'Erro ao validar login! Error: {e}')
         finally:
-            session.close()
+            session_db.close()
+
+    @classmethod
+    def check_token(cls, user_id, verification_code):
+        session_db = create_session()
+        try:
+            user = session_db.query(cls).filter_by(id=user_id).first()
+            if verification_code == user.verification_code:
+                user.is_verified = True
+                session_db.commit()
+                return True
+            return False
+        except Exception as e:
+            print(f'Erro ao consultar token! Error: {e}')
+        finally:
+            session_db.close()
+
+    @classmethod
+    def check_exist_email(cls,email):
+        session_db = create_session()
+        try:
+            user = session_db.query(cls).filter_by(email=email).first()
+            if user:
+                return True
+            return False
+        except Exception as e:
+            print(f'Erro ao consultar email! Error: {e}')
+        finally:
+            session_db.close()
+
+    @classmethod
+    def complete_user(cls, user_id, first_name, last_name,doc_register, foto, mobile_number):
+        session_db = create_session()
+        try:
+            user = session_db.query(cls).filter_by(id=user_id).first()
+            if user:
+                user.first_name = first_name
+                user.last_name = last_name
+                user.doc_register = doc_register
+                user.foto = foto
+                user.mobile_number = mobile_number
+                session_db.commit()
+                return True
+            return False
+        except Exception as e:
+            session_db.rollback()
+            print(f'Erro ao salvar Usuario! Error: {e}')
+        finally:
+            session_db.close()
+
+    @classmethod
+    def delete_user(cls, user_id):
+        session_db = create_session()
+        try:
+            user = session_db.query(cls).filter_by(id=user_id).first()
+            if user:
+                session_db.delete(user)
+                session_db.commit()
+                return True
+            return False
+        except Exception as e:
+            print(f'Erro ao consultar token! Error: {e}')
+            session_db.rollback()
+        finally:
+            session_db.close()
