@@ -23,6 +23,6 @@ def get_users():
 
 
     User.delete_user(1)
-
+    print('teste')
 
     return jsonify({"msg": "Hello, users!"})
