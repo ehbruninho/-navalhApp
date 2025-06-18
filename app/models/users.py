@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, Enum
 from app.models.base import  create_session
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
 from app import db
 
@@ -32,6 +32,7 @@ class User(UserMixin, db.Model):
         try:
             user = cls(email,password)
             session.add(user)
+            session['user_id'] = user.id
             session.commit()
         except Exception as e:
             session.rollback()
@@ -39,3 +40,16 @@ class User(UserMixin, db.Model):
         finally:
             session.close()
 
+    @classmethod
+    def login_user(cls, email, password):
+        session = create_session()
+        try:
+            user = session.query(cls).filter_by(email=email).first()
+            if user and check_password_hash(user.password, password):
+                session['user_id'] = user.id
+                session['type_user'] = user.type_user
+        except Exception as e:
+            session.rollback()
+            print (f'Erro ao efetuar login! Error: {e}')
+        finally:
+            session.close()
