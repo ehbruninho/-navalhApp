@@ -20,9 +20,6 @@ def get_users():
         flash("Usuario criado com sucesso, verifique seu email")
     else:
         print('Usuario existente')
-
-
     User.delete_user(1)
-    print('teste')
 
     return jsonify({"msg": "Hello, users!"})
