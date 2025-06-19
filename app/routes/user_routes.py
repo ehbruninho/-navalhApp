@@ -12,7 +12,7 @@ def get_users():
     password_user ='bruno@2408'
 
     user = User.query.filter_by(email=email_user).first()
-    if user is None:
+    if not user:
         email,token = User.create_user(email_user, password_user)
 
         if email and token:
@@ -20,6 +20,5 @@ def get_users():
         flash("Usuario criado com sucesso, verifique seu email")
     else:
         print('Usuario existente')
-    User.delete_user(1)
 
     return jsonify({"msg": "Hello, users!"})

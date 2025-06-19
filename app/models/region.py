@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String
 from app import db
-from app.models.base import create_session
 
 class Region(db.Model):
     __tablename__ = 'region'
@@ -29,9 +28,29 @@ class Region(db.Model):
     @classmethod
     def get_region(cls, id_region):
         try:
-            region = db.session.get(cls.id == id_region)
+            region = db.session.query(cls).filter_by(id=id_region).first()
             return region
         except Exception as e:
             print(f'Erro ao buscar região! Error: {e}')
+        finally:
+            db.session.close()
+
+    @classmethod
+    def delete_region(cls, id_region):
+        try:
+            region = cls.get_region(id_region)
+            db.session.delete(region)
+            db.session.commit()
+        except Exception as e:
+            print(f'Erro ao deletar região! Error: {e}')
+        finally:
+            db.session.close()
+    @classmethod
+    def get_all_regions(cls):
+        try:
+            regions = db.session.query(cls).all()
+            return regions
+        except Exception as e:
+            print(f' Erro ao listar regiões! Error: {e}')
         finally:
             db.session.close()

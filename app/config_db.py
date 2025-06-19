@@ -1,6 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base
-from app.config import DevelopmentConfig  # ou ProductionConfig
+from app import db, create_app
+from app.models import users, region, local
 
-Base = declarative_base()
-engine = create_engine(DevelopmentConfig.SQLALCHEMY_DATABASE_URI)
+app = create_app()
+
+with app.app_context():
+    db.create_all()
+    print("Banco de dados criado com sucesso.")

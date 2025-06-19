@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, Boolean, Enum
-from app.models.base import  create_session
+from sqlalchemy import Column, Integer, String, Boolean, Enum, DateTime
+from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
@@ -18,122 +18,118 @@ class User(UserMixin, db.Model):
     verification_code = Column(String(100))
     is_verified = Column(Boolean, nullable=True, default=False)
     type_user = Column(Enum("Barber","Client","Administrator"), nullable=False, default="Client")
+    create_att = Column(DateTime,nullable=False)
 
     def __init__(self, email, password):
         self.email = email
         self.password = generate_password_hash(password)
         self.verification_code = secrets.token_urlsafe(16)
         self.is_verified = False
+        self.create_att = datetime.now()
         self.type_user = "Client"
+
 
     @classmethod
     def create_user(cls, email, password):
-        session_db = create_session()
         try:
             user = cls(email,password)
-            session_db.add(user)
-            session_db.commit()
+            db.session.add(user)
+            db.session.commit()
             email_value = user.email
             token_value = user.verification_code
             return email_value, token_value
         except Exception as e:
-            session_db.rollback()
+            db.session.rollback()
             print(f'Erro ao salvar Usuário! Error: {e}')
             return None
         finally:
-            session_db.close()
+            db.session.close()
 
     @classmethod
     def login_user(cls, email, password):
-        session_db = create_session()
         try:
-            user = session_db.query(cls).filter_by(email=email).first()
+            user = db.session.query(cls).filter_by(email=email).first()
             if user and check_password_hash(user.password, password):
                 return user
             return None
         except Exception as e:
             print(f'Erro ao validar login! Error: {e}')
         finally:
-            session_db.close()
+            db.session.close()
 
     @classmethod
     def check_token(cls, user_id, verification_code):
-        session_db = create_session()
         try:
-            user = session_db.query(cls).filter_by(id=user_id).first()
+            user = db.session.query(cls).filter_by(id=user_id).first()
             if verification_code == user.verification_code:
                 user.is_verified = True
                 user.verification_code = ''
-                session_db.commit()
+                db.session.commit()
                 return True
             return False
         except Exception as e:
-            session_db.rollback()
+            db.session.rollback()
             print(f'Erro ao consultar token! Error: {e}')
         finally:
-            session_db.close()
+            db.session.close()
 
     @classmethod
     def check_exist_email(cls,email):
-        session_db = create_session()
         try:
-            user = session_db.query(cls).filter_by(email=email).first()
+            user = db.session.query(cls).filter_by(email=email).first()
             if user:
                 return True
             return False
         except Exception as e:
             print(f'Erro ao consultar email! Error: {e}')
         finally:
-            session_db.close()
+            db.session.close()
 
     @classmethod
     def complete_user(cls, user_id, first_name, last_name,doc_register, foto, mobile_number):
-        session_db = create_session()
         try:
-            user = session_db.query(cls).filter_by(id=user_id).first()
+            user = db.session.query(cls).filter_by(id=user_id).first()
             if user:
                 user.first_name = first_name
                 user.last_name = last_name
                 user.doc_register = doc_register
                 user.foto = foto
                 user.mobile_number = mobile_number
-                session_db.commit()
+                db.session.commit()
                 return True
             return False
         except Exception as e:
-            session_db.rollback()
+            db.session.rollback()
             print(f'Erro ao salvar perfil do usuário! Error: {e}')
         finally:
-            session_db.close()
+            db.session.close()
 
     @classmethod
     def delete_user(cls, user_id):
-        session_db = create_session()
         try:
-            user = session_db.query(cls).filter_by(id=user_id).first()
+            user = db.session.query(cls).filter_by(id=user_id).first()
             if user:
-                session_db.delete(user)
-                session_db.commit()
+                db.session.delete(user)
+                db.session.commit()
                 return True
             return False
         except Exception as e:
             print(f'Erro ao consultar token! Error: {e}')
-            session_db.rollback()
+            db.session.rollback()
         finally:
-            session_db.close()
-            
+            db.session.close()
+
     @classmethod
     def update_password(cls, user_id, password):
-        session_db = create_session()
         try:
-            user = session_db.query(cls).filter_by(id=user_id).first()
+            user = db.session.query(cls).filter_by(id=user_id).first()
             if user:
                 user.password = generate_password_hash(password)
-                session_db.commit()
+                db.session.commit()
                 return True
             return False
         except Exception as e:
             print(f'Erro ao atualizar senha! Error: {e}')
-            session_db.rollback()
+            db.session.rollback()
         finally:
-            session_db.close()
+            db.session.close()

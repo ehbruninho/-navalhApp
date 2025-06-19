@@ -4,6 +4,11 @@ from flask_migrate import Migrate
 from .config import DevelopmentConfig  # ou ProductionConfig
 from flask_wtf import CSRFProtect
 from flask_session import Session
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+from sqlite3 import Connection as SQLite3Connection
+
+
 
 # Cria instâncias globais
 db = SQLAlchemy()
@@ -24,12 +29,22 @@ def create_app(config_class=DevelopmentConfig):
     app.config['SESSION_TYPE'] = 'filesystem'
     sess.init_app(app)
 
-    # Importa models para registrar no SQLAlchemy
-    from app.models import users  # e outros models
+    # Importando tabelas do sistema
+    from app.models import users
     from app.models import region
+    from app.models import local
+    from app.models import barbers
 
     # Registra rotas
     from app.routes.user_routes import user_bp
     app.register_blueprint(user_bp)
+
+    #Cuida do banco de dados (FK)
+    @event.listens_for(Engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        if isinstance(dbapi_connection, SQLite3Connection):
+            cursor = dbapi_connection.cursor()
+            cursor.execute("PRAGMA foreign_keys=ON;")
+            cursor.close()
 
     return app
