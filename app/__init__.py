@@ -34,8 +34,11 @@ def create_app(config_class=DevelopmentConfig):
     from app.models import region
     from app.models import local
     from app.models import barbers
+    from app.models import services
+    from app.models import servicesbarbers
+    from app.models import times_slot
 
-    # Registra rotas
+    # Registra r otas
     from app.routes.user_routes import user_bp
     app.register_blueprint(user_bp)
 

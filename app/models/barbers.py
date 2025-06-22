@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from app import db
+from app.utils.db_helper import *
 
 class Barbers(db.Model):
     __tablename__ = 'barbers'
@@ -7,59 +7,35 @@ class Barbers(db.Model):
     id_users = Column(Integer, ForeignKey('users.id'))
     id_local = Column(Integer, ForeignKey('local.id'))
     bio = Column(String(255), nullable=True)
-    rating = Column(Integer, nullable=True)
+    rating = Column(Integer, nullable=True, default="0")
 
     def __init__(self,id_users, id_local, bio):
         self.id_users = id_users
         self.id_local = id_local
         self.bio = bio
+        self.rating = "0"
 
     @classmethod
     def create_barber(cls, id_users, id_local, bio):
-        try:
-            barber = cls(id_users, id_local, bio)
-            db.session.add(barber)
-            db.session.commit()
-            return barber
-        except Exception as e:
-            print(f'Erro ao criar barbeiro(a)! Error: {e}')
-            db.session.rollback()
-        finally:
-            db.session.close()
+        barber = cls(id_users, id_local, bio)
+        commit_instance(barber)
+        return barber
 
     @classmethod
     def create_rating(cls, id_barber, rating):
-        try:
-            barber = cls.query.filter_by(id=id_barber).first()
-            barber.rating = rating
-            db.session.add(barber)
-            db.session.commit()
-            return barber
-        except Exception as e:
-            print(f'Erro ao salvar classificação! Error: {e}')
-            db.session.rollback()
-        finally:
-            db.session.close()
+        updates = {
+            "rating": rating,
+        }
+        update = update_instance_by(cls, id_barber, updates)
+        return bool(update)
 
     @classmethod
     def get_all_barbers(cls):
-        try:
-            barbers = cls.query.all()
-            return barbers
-        except Exception as e:
-            print(f'Erro ao listar barbeiros(as)! Error: {e}')
-        finally:
-            db.session.close()
+        return get_all_instances(cls)
 
     @classmethod
     def get_barber(cls, barber_id):
-        try:
-            barber = cls.query.filter_by(id=barber_id).first()
-            return barber
-        except Exception as e:
-            print(f'Erro ao listar barbeiro(a)! Error: {e}')
-        finally:
-            db.session.close()
+        return get_instance_by(cls,id=barber_id)
 
 
 

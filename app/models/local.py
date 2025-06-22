@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from app import db
+from app.utils.db_helper import *
 
 class Local(db.Model):
     __tablename__ = 'local'
@@ -19,52 +19,27 @@ class Local(db.Model):
 
     @classmethod
     def create_local(cls, name, address, number_address, district, id_region):
-        try:
-            local = Local(name=name, address=address,number_address=number_address, district=district, id_region=id_region)
-            db.session.add(local)
-            db.session.commit()
-            return local
-        except Exception as e:
-            print(f'Erro ao salvar local! Error: {e}')
-            db.session.rollback()
-        finally:
-            db.session.close()
+        local = cls(name, address, number_address, district, id_region)
+        commit_instance(local)
+        return local
 
     @classmethod
     def delete_local(cls,id_local):
-        try:
-            local = db.session.query(cls).filter_by(id=id_local).first()
-            db.session.delete(local)
-            db.session.commit()
-        except Exception as e:
-            print(f'Erro ao deletar local! Error: {e}')
-            db.session.rollback()
-        finally:
-            db.session.close()
+       return delete_instance_by(cls,id_local)
 
     @classmethod
     def update_local(cls,id_local, address, number_address, district, id_region):
-        try:
-            local = db.session.query(cls).filter_by(id=id_local).first()
-            local.name = address
-            local.number_address = number_address
-            local.district = district
-            local.id_region = id_region
-            db.session.commit()
-        except Exception as e:
-            print(f'Erro ao atualizar local! Error: {e}')
-            db.session.rollback()
-        finally:
-            db.session.close()
+        updates = {
+            "address": address,
+            "number_address": number_address,
+            "district": district,
+            "id_region" : id_region
+        }
+        local = update_instance_by(cls,id_local,updates)
+        return bool(local)
 
     @classmethod
     def get_all_local(cls):
-        try:
-            local = db.session.query(cls).all()
-            return local
-        except Exception as e:
-            print(f'Erro ao listar local! Error: {e}')
-        finally:
-            db.session.close()
+        return get_all_instances(cls)
 
 
