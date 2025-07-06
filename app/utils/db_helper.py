@@ -8,8 +8,7 @@ def commit_instance(instance):
     except Exception as e:
         print(f'Erro ao salvar (instance.__class__.__name__): {e}')
         db.session.rollback()
-    finally:
-        db.session.close()
+        return None
 
 #Nessa função executa busca com o filtro pre definido.
 def get_instance_by(cls, **filters):

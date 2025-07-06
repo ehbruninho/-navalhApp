@@ -5,7 +5,7 @@ from app.utils.db_helper import *
 class TimeSlot(db.Model):
     __tablename__ = 'time_slot'
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    barber_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    barber_id = Column(Integer, ForeignKey('barbers.id'), nullable=False)
     date = Column(Date, nullable=False)
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)
@@ -47,3 +47,15 @@ class TimeSlot(db.Model):
     def delete_slot(cls, id_barber):
         return delete_instance_by(cls,id_barber)
 
+    @classmethod
+    def get_slot_of_barber(cls, id_barber):
+        from app.models.users import User
+        from app.models.barbers import Barbers
+        try:
+            user = db.session.query(User).join(Barbers, User.id == Barbers.id_users).filter(Barbers.id==id_barber).one()
+            return user
+        except Exception as e:
+            print(f'Erro ao listar barbeiros pelo slot disponivel! Error: {e}')
+            return None
+        finally:
+            db.session.close()

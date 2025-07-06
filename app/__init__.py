@@ -37,14 +37,16 @@ def create_app(config_class=DevelopmentConfig):
     from app.models import services
     from app.models import servicesbarbers
     from app.models import times_slot
+    from app.models import appointments
+    from app.models import payments
 
-    # Registra r otas
+    # Registra rotas
     from app.routes.user_routes import user_bp
     app.register_blueprint(user_bp)
 
     #Cuida do banco de dados (FK)
     @event.listens_for(Engine, "connect")
-    def set_sqlite_pragma(dbapi_connection, connection_record):
+    def set_sqlite_pragma(dbapi_connection,connection_record):
         if isinstance(dbapi_connection, SQLite3Connection):
             cursor = dbapi_connection.cursor()
             cursor.execute("PRAGMA foreign_keys=ON;")

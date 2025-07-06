@@ -32,8 +32,9 @@ class User(UserMixin, db.Model):
     @classmethod
     def create_user(cls, email, password):
         user = cls(email, password)
-        db.session.add(user)
-        return user
+        token = user.verification_code
+        commit_instance(user)
+        return user,token
 
     @classmethod
     def login_user(cls, email, password):
@@ -54,7 +55,8 @@ class User(UserMixin, db.Model):
 
     @classmethod
     def check_exist_email(cls,email):
-        return bool(get_instance_by(cls,email=email))
+        user = get_instance_by(cls,email=email)
+        return user is not None
 
     @classmethod
     def complete_user(cls, user_id, first_name, last_name,doc_register, foto, mobile_number):
