@@ -23,7 +23,7 @@ class RegistrationForm(FlaskForm):
 class PerfilForms(FlaskForm):
     first_name = StringField('Nome', validators=[DataRequired()])
     last_name = StringField('Sobrenome', validators=[DataRequired()])
-    cpf = StringField('CPF', validators=[DataRequired()])
+    doc_number = StringField('CPF', validators=[DataRequired()])
     mobile_number = StringField('Telefone', validators=[DataRequired()])
     foto = FileField('Foto', validators=[DataRequired()])
     submit = SubmitField('Cadastrar')

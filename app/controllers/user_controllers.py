@@ -4,13 +4,13 @@ import os
 from werkzeug.utils import secure_filename
 
 
-UPLOAD_FOLDER = 'static/uploads/profile_photo'
+UPLOAD_FOLDER = 'app/static/uploads/profile_photo'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 class UserController:
     @staticmethod
     def authenticate_user(email, password):
-        return User.login(email, password)
+        return User.login_user(email, password)
 
     @staticmethod
     def create_user(email, password):
@@ -28,8 +28,8 @@ class UserController:
             profile = User.complete_user(user_id,first_name, last_name, doc_number,image_path, mobile_number)
 
             if profile:
-                return {"sucesso", "Profile criado com sucesso!"}
-            return {"erro", "Erro ao completar cadastro!"}
+                return {"status": "sucesso", "mensagem": "Profile criado com sucesso!"}
+            return  {"status": "erro", "mensagem": "Erro ao completar cadastro!"}
 
         except Exception as e:
             print(f'Erro: {e}')

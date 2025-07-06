@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Completar Perfil</title>
+</head>
+<body>
+    <h2>Complete seu perfil</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        <div>
+            {{ form.first_name.label }}<br>
+            {{ form.first_name(size=32) }}
+        </div>
+
+        <div>
+            {{ form.last_name.label }}<br>
+            {{ form.last_name(size=32) }}
+        </div>
+
+        <div>
+            {{ form.doc_number.label }}<br>
+            {{ form.doc_number(size=14) }}
+        </div>
+
+        <div>
+            {{ form.mobile_number.label }}<br>
+            {{ form.mobile_number(size=15) }}
+        </div>
+
+        <div>
+            {{ form.foto.label }}<br>
+            {{ form.foto() }}
+        </div>
+
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li><strong>{{ category.title() }}:</strong> {{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>

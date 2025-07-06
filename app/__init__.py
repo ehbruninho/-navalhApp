@@ -7,6 +7,7 @@ from flask_session import Session
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
+from datetime import timedelta
 
 
 
@@ -27,6 +28,8 @@ def create_app(config_class=DevelopmentConfig):
 
     # Configurando Sessions
     app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['SESSION_PERMANENT'] = True
+    app.config['SESSION_LIFETIME'] = timedelta(minutes=30)
     sess.init_app(app)
 
     # Importando tabelas do sistema
