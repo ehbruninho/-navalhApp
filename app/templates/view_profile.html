@@ -1,11 +1,24 @@
 {% extends "base.html" %}
-
-{% block title %}Completar Perfil - NavalhApp{% endblock %}
+{% block title %}Meu Perfil - NavalhApp{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="card shadow-sm p-4 bg-light text-dark" style="max-width: 600px; margin: auto;">
-        <h3 class="mb-4 text-center"><i class="fas fa-user-edit me-2"></i>Complete seu Perfil</h3>
+        <div class="text-center mb-4">
+            {% if user.foto %}
+                <img src="{{ url_for('static', filename='uploads/profile_photo/' ~ user.foto) }}"
+                     alt="Foto de Perfil"
+                     class="rounded-circle shadow"
+                     style="width: 120px; height: 120px; object-fit: cover;">
+            {% else %}
+                <img src="{{ url_for('static', filename='img/default_avatar.png') }}"
+                     alt="Sem Foto"
+                     class="rounded-circle shadow"
+                     style="width: 120px; height: 120px; object-fit: cover;">
+            {% endif %}
+        </div>
+
+        <h3 class="mb-4 text-center"><i class="fas fa-id-card me-2"></i>Meu Perfil</h3>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
@@ -20,51 +33,43 @@
           {% endif %}
         {% endwith %}
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="GET">
             {{ form.hidden_tag() }}
 
             <div class="mb-3">
                 {{ form.first_name.label(class="form-label") }}
                 {{ form.first_name(class="form-control") }}
-                {% for error in form.first_name.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
             </div>
 
             <div class="mb-3">
                 {{ form.last_name.label(class="form-label") }}
                 {{ form.last_name(class="form-control") }}
-                {% for error in form.last_name.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
             </div>
 
             <div class="mb-3">
                 {{ form.doc_number.label(class="form-label") }}
                 {{ form.doc_number(class="form-control") }}
-                {% for error in form.doc_number.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
             </div>
 
             <div class="mb-3">
                 {{ form.mobile_number.label(class="form-label") }}
                 {{ form.mobile_number(class="form-control") }}
-                {% for error in form.mobile_number.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
             </div>
 
             <div class="mb-3">
-                {{ form.foto.label(class="form-label") }}
-                {{ form.foto(class="form-control") }}
-                {% for error in form.foto.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.cat_user.label(class="form-label") }}
+                {{ form.cat_user(class="form-control") }}
             </div>
 
             <div class="d-grid">
-                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Voltar
+                </a>
             </div>
         </form>
     </div>

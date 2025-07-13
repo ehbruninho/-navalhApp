@@ -75,7 +75,39 @@ class User(UserMixin, db.Model):
         return delete_instance_by(cls,user_id)
 
     @classmethod
-    def update_password(cls, user_id, password):
-       hashed_password = generate_password_hash(password)
-       user = update_instance_by(cls,user_id, {"password": hashed_password})
-       return bool(user)
+    def update_password(cls, user_id, old_password,new_password):
+       check_user = User.check_password(user_id,old_password)
+       if check_user:
+            new_hashed_password = generate_password_hash(new_password)
+            user = update_instance_by(cls,user_id, {"password": new_hashed_password})
+            return user
+       return False
+
+    @classmethod
+    def check_password(cls, user_id,password):
+        user = get_instance_by(cls,id=user_id)
+        if user and check_password_hash(user.password,password):
+            return True
+        return False
+
+
+    @classmethod
+    def token_verified(cls,user_id):
+        user = get_instance_by(cls,id=user_id)
+        if user.is_verified:
+            return True
+        return False
+
+    @classmethod
+    def get_profile_user(cls,user_id):
+        user = get_instance_by(cls,id=user_id)
+        if user.first_name:
+            return user
+        return None
+
+    @classmethod
+    def get_doc_register(cls,doc):
+        user = get_instance_by(cls,doc_register=doc)
+        if user:
+            return user.doc_register
+        return None

@@ -1,5 +1,4 @@
 from app import db, create_app
-from app.models import users, region, local
 
 app = create_app()
 

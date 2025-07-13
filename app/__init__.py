@@ -45,7 +45,7 @@ def create_app(config_class=DevelopmentConfig):
 
     # Registra rotas
     from app.routes.user_routes import user_bp
-    app.register_blueprint(user_bp)
+    app.register_blueprint(user_bp, url_prefix='/user')
 
     #Cuida do banco de dados (FK)
     @event.listens_for(Engine, "connect")

@@ -4,20 +4,23 @@
     <meta charset="UTF-8">
     <title>Login - NavalhApp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="bg-light">
-<div class="container mt-5">
-    <div class="card shadow-sm p-4" style="max-width: 400px; margin: auto;">
-        <h3 class="mb-4 text-center">Login</h3>
+<body class="bg-dark text-white">
 
-        <!-- AQUI FICA O get_flashed_messages -->
+<div class="container mt-5">
+    <div class="card shadow-sm p-4 bg-light text-dark" style="max-width: 400px; margin: auto;">
+        <h3 class="mb-4 text-center"><i class="fas fa-sign-in-alt me-2"></i>Login</h3>
+
+        <!-- Flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             <div class="mb-3">
               {% for category, message in messages %}
                 <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                   {{ message }}
-                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
                 </div>
               {% endfor %}
             </div>
@@ -25,16 +28,27 @@
         {% endwith %}
 
         <form method="POST" action="{{ url_for('user.login_user') }}">
-            {{ form.hidden_tag() }}  <!-- CSRF token -->
+            {{ form.hidden_tag() }}
 
             <div class="mb-3">
                 {{ form.email.label(class="form-label") }}
                 {{ form.email(class="form-control") }}
+                {% for error in form.email.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 {{ form.password.label(class="form-label") }}
-                {{ form.password(class="form-control") }}
+                <div class="input-group">
+                    {{ form.password(class="form-control", id="password") }}
+                    <button class="btn btn-outline-secondary toggle-password" type="button">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                {% for error in form.password.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
             </div>
 
             <div class="d-grid">
@@ -44,8 +58,7 @@
     </div>
 </div>
 
-<!-- Script do Bootstrap pra fechar o alerta -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="{{ url_for('static', filename='js/toggle_password_login.js') }}"></script>
 </body>
 </html>
