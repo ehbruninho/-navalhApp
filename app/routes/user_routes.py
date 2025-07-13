@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, render_template, redirect, url_for, session
-from app.forms.login_form import LoginForm, RegistrationForm, PerfilForms, VerifyToken, UserPerfil, UpdatePassword
+from app.forms.user_forms import *
 from app.controllers.user_controllers import UserController
 from app.utils.auth_decorator import login_required
 from app.utils.notifications.send_email import send_token

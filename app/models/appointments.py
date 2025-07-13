@@ -8,8 +8,8 @@ class Appointment(db.Model):
     __tablename__ = 'appointments'
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     service_id = Column(Integer, ForeignKey('barber_service.id'), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    barber_id = Column(Integer, ForeignKey('barbers.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False) # Quem solicita o serviço
+    barber_id = Column(Integer, ForeignKey('barbers.id'), nullable=False) # quem atende
     date = Column(Date, nullable=False)
     time_slot_id = Column(Integer, ForeignKey('time_slot.id'), nullable=False)
     payment_status = Column(Boolean, nullable=False, default=False)

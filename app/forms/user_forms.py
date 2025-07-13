@@ -53,5 +53,5 @@ class UpdatePassword(FlaskForm):
     def validate_old_password(self,field):
         user_id = session.get('user_id')
         if not User.check_password(user_id,field.data):
-            raise ValidationError('Senha incorreto!')
+            raise ValidationError('Senha incorreta!')
 
