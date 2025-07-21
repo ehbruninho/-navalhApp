@@ -20,6 +20,9 @@ class User(UserMixin, db.Model):
     type_user = Column(Enum("Barber","Client","Administrator"), nullable=False, default="Client")
     create_att = Column(DateTime,nullable=False)
 
+    barbers = db.relationship('Barbers', back_populates='user')
+
+
     def __init__(self, email, password):
         self.email = email
         self.password = generate_password_hash(password)
@@ -110,4 +113,11 @@ class User(UserMixin, db.Model):
         user = get_instance_by(cls,doc_register=doc)
         if user:
             return user.doc_register
+        return None
+
+    @classmethod
+    def get_type_user(cls,user_id):
+        user = get_instance_by(cls,id=user_id)
+        if user:
+            return user.type_user
         return None

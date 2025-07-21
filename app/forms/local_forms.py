@@ -17,3 +17,16 @@ class LocalForm(FlaskForm):
         self.city.choices = [(region.id, region.city) for region in Region.get_all_regions()]
 
 
+class RegionForm(FlaskForm):
+    city = StringField('Nome',validators=[DataRequired()])
+    postal_code = StringField('Postal',validators=[DataRequired()])
+    state = SelectField('UF',validators=[DataRequired()],choices=[('RS','RS'),('SC','SC')])
+    submit = SubmitField('Salvar')
+
+class ViewRegionForm(FlaskForm):
+    name = StringField('Estabelecimento',render_kw={"readonly":True})
+    address = StringField('Endereço', render_kw={"readonly":True})
+    number_address = StringField('Numero', render_kw={"readonly":True})
+    district = StringField('Bairro', render_kw={"readonly":True})
+    city = SelectField('Cidade', render_kw={"readonly":True})
+    submit = SubmitField('Voltar')

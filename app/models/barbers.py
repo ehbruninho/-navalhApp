@@ -9,6 +9,9 @@ class Barbers(db.Model):
     bio = Column(String(255), nullable=True)
     rating = Column(Integer, nullable=True, default="0")
 
+    user = db.relationship('User', back_populates='barbers')
+    local = db.relationship('Local', back_populates='barbers')
+
     def __init__(self,id_users, id_local, bio):
         self.id_users = id_users
         self.id_local = id_local

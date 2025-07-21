@@ -1,4 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import joinedload
+from app.models.users import User
+from app.models.barbers import Barbers
 from app.utils.db_helper import *
 
 class Local(db.Model):
@@ -9,6 +12,10 @@ class Local(db.Model):
     number_address = Column(Integer, nullable=True)
     district = Column(String(255), nullable=True)
     id_region = Column(Integer, ForeignKey('region.id'))
+
+    #relações entre tabelas
+    region = db.relationship('Region', backref='region')
+    barbers = db.relationship('Barbers', back_populates='local')
 
     def __init__(self, name, address, number_address, district, id_region):
         self.name = name
@@ -43,3 +50,24 @@ class Local(db.Model):
         return get_all_instances(cls)
 
 
+    @classmethod
+    def get_local_name(cls, local_name):
+        return get_instance_by(cls,name=local_name)
+
+    @classmethod
+    def get_local_test(cls):
+        locais = Local.query.options(joinedload(Local.region)).all()
+        if locais:
+            return locais
+        return False
+
+    @classmethod
+    def get_barber_local(cls,local_name):
+       barbers = (db.session.query(User.first_name, User.last_name)
+                  .join(Barbers, Barbers.id_users == User.id)
+                  .join(Local, Barbers.id_local==Local.id)
+                  .filter(Local.name==local_name).all())
+
+       if barbers:
+           return barbers
+       return False

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Cadastro de Região - NavalhApp{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm p-4 bg-light text-dark" style="max-width: 600px; margin: auto;">
+        <h3 class="mb-4 text-center"><i class="fa-solid fa-location-dot"></i> Cadastrar Região</h3>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mb-3">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                {{ form.city.label(class="form-label") }}
+                {{ form.city(class="form-control") }}
+                {% for error in form.city.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.postal_code.label(class="form-label") }}
+                {{ form.postal_code(class="form-control") }}
+                {% for error in form.postal_code.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.state.label(class="form-label") }}
+                {{ form.state(class="form-control") }}
+                {% for error in form.state.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="d-grid">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

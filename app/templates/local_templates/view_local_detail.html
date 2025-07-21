@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card p-4">
+      <h2>{{ local.name }}</h2>
+      <p>Endereço: {{ local.address }}, {{ local.number_address }}</p>
+      <p>Bairro: {{ local.district }}</p>
+        {% if barbers %}
+          <h4>Barbeiros cadastrados:</h4>
+            {% for barber in barbers %}
+          <ul>
+                <li><p>Nome: {{ barber.first_name }} {{ barber.last_name }}</p></li>
+          </ul>
+            {% endfor %}
+        {% else %}
+          <p class="text-muted">Nenhum barbeiro cadastrado ainda.</p>
+        {% endif %}
+    <a href="{{ url_for('local.view_local') }}" class="btn btn-secondary mt-3">Voltar</a>
+  </div>
+</div>
+{% endblock %}

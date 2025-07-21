@@ -19,7 +19,7 @@ def register_users():
             return redirect(url_for('user.login_user'))
         else:
             flash('Falha ao registrar Usuario','danger')
-    return render_template('register.html', form=form)
+    return render_template('user_templates/register.html', form=form)
 
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login_user():
@@ -28,20 +28,20 @@ def login_user():
         user,message,category,next_route = UserController.login_user_and_redirect(form.email.data, form.password.data)
         if not user:
             flash(message,category)
-            return render_template('login.html', form=form)
+            return render_template('user_templates/login.html', form=form)
 
         session['user_id'] = user.id  # <--- faltando isso?
         session.permanent = True
         flash(message,category)
         return redirect(url_for(f"{next_route}"))
 
-    return render_template('login.html', form=form)
+    return render_template('user_templates/login.html', form=form)
 
 @user_bp.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
 
-    return render_template('dashboard.html')
+    return render_template('user_templates/dashboard.html')
 
 @user_bp.route('/complete_register', methods=['GET', 'POST'])
 @login_required
@@ -66,7 +66,7 @@ def complete_register():
             return redirect(url_for(routes))
         else:
             flash(message,category)
-    return render_template('complete_profile.html', form=form)
+    return render_template('user_templates/complete_profile.html', form=form)
 
 @user_bp.route('/verify_token', methods=['GET','POST'])
 @login_required
@@ -84,7 +84,7 @@ def verify_token():
             return redirect(url_for('user.dashboard'))
         else:
             flash('Token inválido', 'danger')
-    return render_template('verify_token.html', form=form)
+    return render_template('user_templates/verify_token.html', form=form)
 
 @user_bp.route('/logout')
 @login_required
@@ -106,7 +106,7 @@ def view_profile():
                        email=user.email,
                        cat_user= user.type_user)
 
-    return render_template('view_profile.html', form=form,user=user)
+    return render_template('user_templates/view_profile.html', form=form, user=user)
 
 @user_bp.route('/update_password', methods=['GET', 'POST'])
 @login_required
@@ -124,4 +124,4 @@ def update_password():
         if user:
             flash(message,category)
             return redirect(url_for(routes))
-    return render_template('update_password.html', form=form)
+    return render_template('user_templates/update_password.html', form=form)
