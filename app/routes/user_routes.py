@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, redirect, url_for, session
+from flask import Blueprint, flash, render_template, redirect, url_for
 from app.forms.user_forms import *
 from app.controllers.user_controllers import UserController
 from app.utils.auth_decorator import login_required
@@ -30,7 +30,7 @@ def login_user():
             flash(message,category)
             return render_template('user_templates/login.html', form=form)
 
-        session['user_id'] = user.id  # <--- faltando isso?
+        session['user_id'] = user.id
         session.permanent = True
         flash(message,category)
         return redirect(url_for(f"{next_route}"))

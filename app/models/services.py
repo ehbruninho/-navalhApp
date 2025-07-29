@@ -40,3 +40,12 @@ class Services(db.Model):
             print(f'Errp ao listar profissional por serviço! Error: {e}')
         finally:
             db.session.close()
+
+    @classmethod
+    def update_service(cls,id_service,name_service,description):
+        updates = {
+            'name': name_service,
+            'description': description
+        }
+        service = update_instance_by(cls,id_service,updates)
+        return bool(service)

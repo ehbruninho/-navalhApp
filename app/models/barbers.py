@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from app.models.users import User
 from app.utils.db_helper import *
 
 class Barbers(db.Model):
@@ -40,6 +41,16 @@ class Barbers(db.Model):
     def get_barber(cls, barber_id):
         return get_instance_by(cls,id=barber_id)
 
+    @classmethod
+    def get_barber_name(cls, barber_name):
+        barber = (db.session.query(User)
+                   .join(Barbers, Barbers.id_users == User.id)
+                   .filter(User.first_name == barber_name).first())
+        return barber if barber else False
 
 
+    @classmethod
+    def get_barber_id(cls, user_id):
+        barber = get_instance_by(cls,id_users=user_id)
+        return barber.id if barber else False
 

@@ -8,14 +8,7 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
 from datetime import timedelta
-
-
-
-# Cria instâncias globais
-db = SQLAlchemy()
-migrate = Migrate()
-csrf = CSRFProtect()
-sess = Session()
+from app.extension import db, migrate, csrf, sess
 
 def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
@@ -46,8 +39,10 @@ def create_app(config_class=DevelopmentConfig):
     # Registra rotas
     from app.routes.user_routes import user_bp
     from app.routes.local_routes import local_bp
+    from app.routes.service_routes import services_bp
     app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(local_bp, url_prefix='/local')
+    app.register_blueprint(services_bp, url_prefix='/service')
 
     #Cuida do banco de dados (FK)
     @event.listens_for(Engine, "connect")

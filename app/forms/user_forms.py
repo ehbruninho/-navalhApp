@@ -29,6 +29,8 @@ class PerfilForms(FlaskForm):
     submit = SubmitField('Cadastrar')
 
     def validate_doc_number(self,field):
+        if not field.data.isdigit() or len(field.data) != 10:
+            raise ValidationError("CPF inválido. Digite os 11 números sem pontos ou traços.")
         if User.get_doc_register(field.data):
             raise ValidationError('CPF já registrado!')
 

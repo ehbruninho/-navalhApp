@@ -22,6 +22,7 @@
         <option value="$MODULE_DIR$/app/templates" />
         <option value="$MODULE_DIR$/app/templates/local_templates" />
         <option value="$MODULE_DIR$/app/templates/user_templates" />
+        <option value="$MODULE_DIR$/app/templates/service_templates" />
       </list>
     </option>
   </component>

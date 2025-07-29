@@ -22,10 +22,11 @@ class ServiceBarber(db.Model):
         return service_barber
 
     @classmethod
-    def get_service_barber(cls, id_barber):
-        return get_instance_by(cls,barber_id=id_barber)
-
-    @classmethod
     def delete_service_barber(cls, id_service_barber):
         return delete_instance_by(cls,id_service_barber)
+
+    @classmethod
+    def get_service_by_barber(cls, id_barber):
+        return get_all_instance_with_fiter(cls,barber_id=id_barber)
+
 
