@@ -1,8 +1,9 @@
-from flask import Blueprint, flash, render_template, redirect, url_for
+from flask import Blueprint, flash, render_template, redirect, url_for, request
 from app.forms.user_forms import *
 from app.controllers.user_controllers import UserController
 from app.utils.auth_decorator import login_required
 from app.utils.notifications.send_email import send_token
+
 
 # Cria o blueprint
 user_bp = Blueprint('user', __name__)
@@ -21,21 +22,23 @@ def register_users():
             flash('Falha ao registrar Usuario','danger')
     return render_template('user_templates/register.html', form=form)
 
-@user_bp.route('/login', methods=['GET', 'POST'])
+@user_bp.route('/login', methods=['GET','POST'])
 def login_user():
     form = LoginForm()
-    if form.validate_on_submit():
-        user,message,category,next_route = UserController.login_user_and_redirect(form.email.data, form.password.data)
-        if not user:
-            flash(message,category)
-            return render_template('user_templates/login.html', form=form)
+    if request.method =='POST':
+        if form.validate_on_submit():
+            user,message,category,next_route = UserController.login_user_and_redirect(form.email.data, form.password.data)
+            if not user:
+                flash(message,category)
+                return render_template('user_templates/login.html', form=form)
 
-        session['user_id'] = user.id
-        session.permanent = True
-        flash(message,category)
-        return redirect(url_for(f"{next_route}"))
+            session['user_id'] = user.id
+            session.permanent = True
+            flash(message,category)
+            return redirect(url_for(f"{next_route}"))
 
     return render_template('user_templates/login.html', form=form)
+
 
 @user_bp.route('/dashboard', methods=['GET', 'POST'])
 @login_required
