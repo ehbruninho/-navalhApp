@@ -23,6 +23,13 @@ class ServiceController:
             return service
         return False, "Barbeiro sem serviço cadastrado!","warning","user.dashboard"
 
+    @staticmethod
+    def get_service_for_barber(barber_id):
+        services = ServiceBarber.get_service_by_barber(barber_id)
+        if services:
+            return services
+        return False, "Nenhum serviço cadastrado para esse barber!","warning","user.dashboard"
+
 
     @staticmethod
     def get_service_name(name_service):

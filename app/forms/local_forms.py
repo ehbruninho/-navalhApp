@@ -30,3 +30,10 @@ class ViewRegionForm(FlaskForm):
     district = StringField('Bairro', render_kw={"readonly":True})
     city = SelectField('Cidade', render_kw={"readonly":True})
     submit = SubmitField('Voltar')
+
+class CityFilterForm(FlaskForm):
+    city = SelectField('Cidade',validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        super(CityFilterForm, self).__init__(*args, **kwargs)
+        self.city.choices = [(region.id, region.city) for region in Region.get_all_regions()]

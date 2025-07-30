@@ -3,6 +3,7 @@ from sqlalchemy.orm import joinedload
 from app.models.users import User
 from app.models.barbers import Barbers
 from app.utils.db_helper import *
+from app.models.region import Region
 
 class Local(db.Model):
     __tablename__ = 'local'
@@ -63,6 +64,7 @@ class Local(db.Model):
 
     @classmethod
     def get_barber_local(cls,local_name):
+
        barbers = (db.session.query(User.first_name, User.last_name)
                   .join(Barbers, Barbers.id_users == User.id)
                   .join(Local, Barbers.id_local==Local.id)
@@ -70,4 +72,13 @@ class Local(db.Model):
 
        if barbers:
            return barbers
+
        return False
+
+
+    @classmethod
+    def get_local_from_city(cls, region_id):
+        locals = (db.session.query(cls.name,cls.address,cls.number_address,cls.district)
+                  .join(Region, Region.id == cls.id_region).filter(Region.id == region_id).all()
+                  )
+        return locals if locals else False

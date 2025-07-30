@@ -15,3 +15,7 @@ class LocalController:
     @staticmethod
     def get_local_barber(local_name):
         return Local.get_barber_local(local_name)
+
+    @staticmethod
+    def get_local_from_city_name(id_region):
+        return Local.get_local_from_city(id_region)

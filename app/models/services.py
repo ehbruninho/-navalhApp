@@ -7,6 +7,8 @@ class Services(db.Model):
     name = Column(String(100), nullable=False)
     description = Column(String(200), nullable=False)
 
+    services_link = db.relationship('ServiceBarber', back_populates='service')
+
     def __init__(self, name, description):
         self.name = name
         self.description = description

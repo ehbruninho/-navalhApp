@@ -1,0 +1,13 @@
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.city.label }} {{ form.city() }}
+    <input type="submit" value="Filtrar">
+</form>
+
+{% if locals %}
+    <ul>
+    {% for local in locals %}
+        <li>{{ local.name }} - {{ local.addresses }} - {{ local.district }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
