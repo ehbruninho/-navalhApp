@@ -1,5 +1,8 @@
 from sqlalchemy import Column, ForeignKey, Integer, Float
 from app.utils.db_helper import  *
+from app.models.barbers import Barbers
+from app.models.services import Services
+from app.models.users import User
 
 class ServiceBarber(db.Model):
     __tablename__ = 'barber_service'
@@ -8,6 +11,9 @@ class ServiceBarber(db.Model):
     service_id = Column(Integer, ForeignKey('services.id'), nullable=False)
     price = Column(Float, nullable=False)
     duration = Column(Integer, nullable=False)
+
+    service = db.relationship('Services', back_populates='services_link')
+    barber = db.relationship('Barbers', back_populates='services_link')
 
     def __init__(self, barber_id, service_id, price, duration):
         self.barber_id = barber_id
@@ -27,6 +33,15 @@ class ServiceBarber(db.Model):
 
     @classmethod
     def get_service_by_barber(cls, id_barber):
-        return get_all_instance_with_fiter(cls,barber_id=id_barber)
+        services = (db.session.query(User.first_name,User.last_name,Services.name,cls.price,cls.duration)
+                    .select_from(cls)
+                    .join(User, User.id == Barbers.id_users)
+                    .join(Services,Services.id == cls.service_id)
+                    .join(Barbers, Barbers.id == cls.barber_id)
+                    .filter(cls.barber_id == id_barber)
+                    .all())
+        return services if services else None
+
+
 
 

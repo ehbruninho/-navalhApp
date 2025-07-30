@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, render_template, redirect, url_for
-from app.forms.local_forms import LocalForm, RegionForm
+from app.forms.local_forms import LocalForm, RegionForm, CityFilterForm
 from app.controllers.local_controllers import *
 from app.utils.auth_decorator import admin_required, login_required
 
@@ -44,6 +44,7 @@ def view_local():
 @local_bp.route('/view_local/<local_name>')
 @login_required
 def view_local_detail(local_name):
+    """endpoint = barbers?barbershop=id"""
     name = local_name.replace('-',' ').title()
     print(name)
     local = LocalController.get_local_name(name)
@@ -54,3 +55,17 @@ def view_local_detail(local_name):
     barbers = LocalController.get_local_barber(name)
 
     return render_template('local_templates/view_local_detail.html', local=local, barbers=barbers)
+
+@local_bp.route('/local_from_city', methods=['GET','POST'])
+def view_local_from_city():
+    form = CityFilterForm()
+    locals = []
+
+    if form.validate_on_submit():
+        city_id = form.city.data
+        locals = LocalController.get_local_from_city_name(city_id)
+        if not locals:
+            flash("Nenhuma barbearia registrada!","warning")
+            print("Nenhuma barbearia registrada!")
+            return redirect(url_for('user.dashboard'))
+    return render_template('local_templates/filter.html', form=form, locals=locals)

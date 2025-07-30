@@ -12,6 +12,7 @@ class Barbers(db.Model):
 
     user = db.relationship('User', back_populates='barbers')
     local = db.relationship('Local', back_populates='barbers')
+    services_link = db.relationship('ServiceBarber', back_populates='barber')
 
     def __init__(self,id_users, id_local, bio):
         self.id_users = id_users
