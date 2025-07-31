@@ -35,13 +35,13 @@ class Services(db.Model):
         from app.models.barbers import Barbers
         from app.models.users import User
 
-        try:
-            barber = db.session.query(User).join(Barbers, User.id == Barbers.id).join(ServiceBarber, Barbers.id == ServiceBarber.barber_id).join(cls,cls.id == ServiceBarber.service_id).filter(cls.name == name_service).all()
-            return barber
-        except Exception as e:
-            print(f'Errp ao listar profissional por serviço! Error: {e}')
-        finally:
-            db.session.close()
+        barber = (db.session.query(User.first_name, User.last_name, User.mobile_number)
+                      .join(Barbers, User.id == Barbers.id)
+                      .join(ServiceBarber, Barbers.id == ServiceBarber.barber_id)
+                      .join(cls,cls.id == ServiceBarber.service_id)
+                      .filter(cls.name == name_service)
+                      .all())
+        return barber
 
     @classmethod
     def update_service(cls,id_service,name_service,description):
