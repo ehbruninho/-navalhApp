@@ -26,17 +26,35 @@ class ServiceController:
     @staticmethod
     def get_service_for_barber(barber_id):
         services = ServiceBarber.get_service_by_barber(barber_id)
-        if services:
-            return services
-        return False, "Nenhum serviço cadastrado para esse barber!","warning","user.dashboard"
+        if not services:
+            return False, "Nenhum serviço cadastrado para esse barber!", "warning", "user.dashboard"
 
+        barber_service = []
+
+        for service in services:
+            barber_service.append({
+                "nome": service[0],
+                "sobrenome": service[1],
+                "servico": service[2],
+                "preco": service[3],
+                "duracao": service[4]
+            })
+        return barber_service
 
     @staticmethod
     def get_service_name(name_service):
         service = Services.get_barber_for_service(name_service)
-        if service:
-            return service
-        return False , "Nenhum barbeiro encontrado para esse serviço!","warning","user.dashboard"
+        barbers = []
+        if not service:
+            return False, "Nenhum barbeiro encontrado para esse serviço!", "warning", "user.dashboard"
+        for services in service:
+            barbers.append({
+                "nome": services[0],
+                "sobrenome": services[1],
+                "telefone": services[2]
+            })
+
+        return barbers
 
     @staticmethod
     def add_service_barber(barber_id, service_id, price, duration):

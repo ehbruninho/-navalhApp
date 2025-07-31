@@ -30,17 +30,17 @@ class Services(db.Model):
        return get_all_instances(cls)
 
     @classmethod
-    def get_barber_for_service(cls,name_service):
+    def get_barber_for_service(cls, name_service):
         from app.models.servicesbarbers import ServiceBarber
         from app.models.barbers import Barbers
         from app.models.users import User
 
         barber = (db.session.query(User.first_name, User.last_name, User.mobile_number)
-                      .join(Barbers, User.id == Barbers.id)
-                      .join(ServiceBarber, Barbers.id == ServiceBarber.barber_id)
-                      .join(cls,cls.id == ServiceBarber.service_id)
-                      .filter(cls.name == name_service)
-                      .all())
+                  .join(Barbers, User.id == Barbers.id)
+                  .join(ServiceBarber, Barbers.id == ServiceBarber.barber_id)
+                  .join(cls, cls.id == ServiceBarber.service_id)
+                  .filter(cls.name == name_service)
+                  .all())
         return barber
 
     @classmethod
