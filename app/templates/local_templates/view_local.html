@@ -2,10 +2,17 @@
 {% block title %}Barbearias - NavalhApp{% endblock %}
 
 {% block content %}
+
 <div class="container mt-5">
     <h3 class="mb-4 text-center text-white">
         <i class="fa-solid fa-shop"></i> Barbearias Cadastradas
     </h3>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.city.label }} {{ form.city() }}
+    <input type="submit" value="Filtrar">
+</form>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -29,7 +36,6 @@
                     <p class="card-text">
                         <strong>Endereço:</strong> {{ local.address }}, {{ local.number_address }}<br>
                         <strong>Bairro:</strong> {{ local.district }}<br>
-                        <strong>Cidade:</strong> {{ local.region.city }}<br>
                         <br>
                         <a href="{{ url_for('local.view_local_detail', local_name=local.name|replace(' ', '-') ) }}" class="btn btn-primary">
                         Ver

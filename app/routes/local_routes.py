@@ -30,16 +30,22 @@ def register_region():
             return redirect(url_for('user.dashboard'))
     return render_template('local_templates/register_region.html', form=forms)
 
-@local_bp.route('/view_local', methods=['GET'])
+@local_bp.route('/view_local', methods=['GET','POST'])
 @login_required
 def view_local():
-    locais = LocalController.get_all_local()
-    if not locais:
-        flash("Nenhuma barbearia registrada!","warning")
-        return redirect(url_for('user.dashboard'))
+    form = CityFilterForm()
+    locais = []
 
-    return render_template('local_templates/view_local.html', locais=locais)
+    if form.validate_on_submit():
+        city_id = form.city.data
+        locais = LocalController.get_local_from_city_name(city_id)
 
+        if not locals:
+            flash("Nenhuma barbearia registrada!", "warning")
+            print("Nenhuma barbearia registrada!")
+            return redirect(url_for('user.dashboard'))
+
+    return render_template('local_templates/view_local.html', locais=locais, form=form)
 
 @local_bp.route('/view_local/<local_name>')
 @login_required
@@ -55,17 +61,3 @@ def view_local_detail(local_name):
     barbers = LocalController.get_local_barber(name)
 
     return render_template('local_templates/view_local_detail.html', local=local, barbers=barbers)
-
-@local_bp.route('/local_from_city', methods=['GET','POST'])
-def view_local_from_city():
-    form = CityFilterForm()
-    locals = []
-
-    if form.validate_on_submit():
-        city_id = form.city.data
-        locals = LocalController.get_local_from_city_name(city_id)
-        if not locals:
-            flash("Nenhuma barbearia registrada!","warning")
-            print("Nenhuma barbearia registrada!")
-            return redirect(url_for('user.dashboard'))
-    return render_template('local_templates/filter.html', form=form, locals=locals)
