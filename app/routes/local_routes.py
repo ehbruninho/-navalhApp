@@ -52,7 +52,6 @@ def view_local():
 def view_local_detail(local_name):
     """endpoint = barbers?barbershop=id"""
     name = local_name.replace('-',' ').title()
-    print(name)
     local = LocalController.get_local_name(name)
     if not local:
         flash("Nenhuma barbearia registrada!","warning")

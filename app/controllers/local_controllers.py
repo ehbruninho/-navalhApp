@@ -14,7 +14,22 @@ class LocalController:
 
     @staticmethod
     def get_local_barber(local_name):
-        return Local.get_barber_local(local_name)
+        barbers_local = []
+        barbers = Local.get_barber_local(local_name)
+        if not barbers:
+            return None
+
+        for barber in barbers:
+            barbers_local.append(
+                {
+                    "nome": barber[0],
+                    "sobrenome": barber[1],
+                    "servico": barber[2],
+                    "valor": barber[3],
+                    "duracao": barber[4]
+                }
+            )
+        return barbers_local
 
     @staticmethod
     def get_local_from_city_name(id_region):
