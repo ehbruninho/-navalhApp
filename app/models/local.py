@@ -1,9 +1,11 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, aliased
 from app.models.users import User
 from app.models.barbers import Barbers
 from app.utils.db_helper import *
 from app.models.region import Region
+from app.models.services import Services
+from app.models.servicesbarbers import ServiceBarber
 
 class Local(db.Model):
     __tablename__ = 'local'
@@ -64,16 +66,27 @@ class Local(db.Model):
 
     @classmethod
     def get_barber_local(cls,local_name):
+        barber_alias = aliased(Barbers)
+        service_barber_alias = aliased(ServiceBarber)
 
-       barbers = (db.session.query(User.first_name, User.last_name)
-                  .join(Barbers, Barbers.id_users == User.id)
-                  .join(Local, Barbers.id_local==Local.id)
-                  .filter(Local.name==local_name).all())
+        barbers = (
+            db.session.query(
+                User.first_name,
+                User.last_name,
+                Services.name,
+                service_barber_alias.price,
+                service_barber_alias.duration
+            )
+            .select_from(service_barber_alias)
+            .join(barber_alias, service_barber_alias.barber_id == barber_alias.id)
+            .join(Services, Services.id == service_barber_alias.service_id)
+            .join(User, User.id == barber_alias.id_users)
+            .join(Local, barber_alias.id_local == Local.id)
+            .filter(Local.name == local_name)
+            .all()
+        )
 
-       if barbers:
-           return barbers
-
-       return False
+        return barbers if barbers else False
 
 
     @classmethod
