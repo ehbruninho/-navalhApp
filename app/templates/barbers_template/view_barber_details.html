@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card p-4">
+       {% if not details %}
+           <p class="text">Nenhum barbeiro cadastrado ainda.</p>
+       {% else %}
+         <h3>Detalhes Barbeiro:</h3>
+         {% for nome, info in details.items() %}
+              <p><strong>Nome:</strong> {{ nome }}</p>
+              <p><strong>Classificação:</strong> {{ info.ratting }}</p>
+              <p><strong>Barbearia:</strong> {{ info.local }}</p>
+                {% for servico in info.servicos %}
+                    {% if not servico.servico %}
+                        <p class="text">Este barbeiro ainda não tem nenhum serviço cadastrado.</p>
+                    {% else %}
+                          <li><strong>Serviço:</strong> {{ servico.servico }}</li>
+                          <li><strong>Valor:</strong> R$ {{ '%.2f' | format(servico.valor) }}</li>
+                          <li><strong>Duração:</strong> {{ servico.duracao }} min</li>
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            <a href="{{ url_for('local.view_local_detail', local_name=info.local.replace(" ","-")) }}" class="btn btn-secondary mt-3">Voltar</a>
+         {% endfor %}
+
+       {% endif %}
+  </div>
+</div>
+{% endblock %}

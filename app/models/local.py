@@ -71,16 +71,17 @@ class Local(db.Model):
 
         barbers = (
             db.session.query(
+                barber_alias.id,
                 User.first_name,
                 User.last_name,
                 Services.name,
                 service_barber_alias.price,
                 service_barber_alias.duration
             )
-            .select_from(service_barber_alias)
-            .join(barber_alias, service_barber_alias.barber_id == barber_alias.id)
-            .join(Services, Services.id == service_barber_alias.service_id)
+            .select_from(barber_alias)
             .join(User, User.id == barber_alias.id_users)
+            .outerjoin(service_barber_alias, service_barber_alias.barber_id == barber_alias.id)
+            .outerjoin(Services, Services.id == service_barber_alias.service_id)
             .join(Local, barber_alias.id_local == Local.id)
             .filter(Local.name == local_name)
             .all()

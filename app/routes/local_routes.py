@@ -60,3 +60,5 @@ def view_local_detail(local_name):
     barbers = LocalController.get_local_barber(name)
 
     return render_template('local_templates/view_local_detail.html', local=local, barbers=barbers)
+
+

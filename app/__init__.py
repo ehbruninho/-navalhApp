@@ -40,9 +40,11 @@ def create_app(config_class=DevelopmentConfig):
     from app.routes.user_routes import user_bp
     from app.routes.local_routes import local_bp
     from app.routes.service_routes import services_bp
+    from app.routes.barber_routes import barber_bp
     app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(local_bp, url_prefix='/local')
     app.register_blueprint(services_bp, url_prefix='/service')
+    app.register_blueprint(barber_bp, url_prefix='/barber')
 
     #Cuida do banco de dados (FK)
     @event.listens_for(Engine, "connect")

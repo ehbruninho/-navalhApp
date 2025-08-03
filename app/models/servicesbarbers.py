@@ -34,14 +34,17 @@ class ServiceBarber(db.Model):
     @classmethod
     def get_service_by_barber(cls, id_barber):
         services = (db.session.query(User.first_name, User.last_name, Services.name, cls.price, cls.duration)
-                    .select_from(cls)
+                    .select_from(Barbers)
                     .join(User, User.id == Barbers.id_users)
-                    .join(Services, Services.id == cls.service_id)
-                    .join(Barbers, Barbers.id == cls.barber_id)
-                    .filter(cls.barber_id == id_barber)
+                    .outerjoin(cls, cls.barber_id == Barbers.id)
+                    .outerjoin(Services, Services.id == cls.service_id)
+                    .filter(Barbers.id == id_barber)
                     .all())
         return services if services else None
 
+    @classmethod
+    def find_service_by_barber(cls, id_barber):
+        return get_instance_by(cls,barber_id=id_barber)
 
 
 

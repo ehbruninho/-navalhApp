@@ -1,4 +1,5 @@
 from app.models.local import Local
+
 class LocalController:
     @staticmethod
     def register_local(name,address,number_address,district,city_id):
@@ -14,22 +15,25 @@ class LocalController:
 
     @staticmethod
     def get_local_barber(local_name):
-        barbers_local = []
         barbers = Local.get_barber_local(local_name)
         if not barbers:
             return None
 
+        grouped = {}
+
         for barber in barbers:
-            barbers_local.append(
-                {
-                    "nome": barber[0],
-                    "sobrenome": barber[1],
-                    "servico": barber[2],
-                    "valor": barber[3],
-                    "duracao": barber[4]
+            nome = f"{barber[1]} {barber[2]}"
+
+            if nome not in grouped:
+                grouped[nome] = {
+                    "id": barber[0],
+                    "servicos": []
                 }
-            )
-        return barbers_local
+            grouped[nome]["servicos"].append({
+                "servico": barber[3]
+            })
+
+        return grouped
 
     @staticmethod
     def get_local_from_city_name(id_region):

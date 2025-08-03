@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from app.models.users import User
 from app.utils.db_helper import *
+from app.models.users import User
 
 class Barbers(db.Model):
     __tablename__ = 'barbers'
@@ -55,3 +55,26 @@ class Barbers(db.Model):
         barber = get_instance_by(cls,id_users=user_id)
         return barber.id if barber else False
 
+    @classmethod
+    def fetch_barber_detail(cls, barber_id):
+        from app.models.users import User
+        from app.models.local import Local
+        from app.models.servicesbarbers import ServiceBarber
+        from app.models.services import Services
+
+        details = (db.session.query(User.first_name,
+                                    User.last_name,
+                                    Local.name,
+                                    Services.name,
+                                    ServiceBarber.price,
+                                    ServiceBarber.duration,
+                                    Barbers.rating)
+                   .select_from(User)
+                   .join(Barbers, Barbers.id_users == User.id)
+                   .join(Local, Local.id == Barbers.id_local)
+                   .join(ServiceBarber, ServiceBarber.barber_id == Barbers.id)
+                   .join(Services, Services.id == ServiceBarber.service_id)
+                   .filter(Barbers.id == barber_id).all()
+                   )
+
+        return details if details else False

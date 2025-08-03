@@ -9,15 +9,20 @@
            <p class="text">Nenhum barbeiro cadastrado ainda.</p>
                 {% else %}
                   <h4>Barbeiros cadastrados:</h4>
-                  {% for barber in barbers %}
-                        <ul>
-                          <li><p>Nome: {{ barber.nome }} {{ barber.sobrenome }}</p></li>
-                              <ul>
-                                <li>Serviços: {{ barber.servico }}</li>
-                                <li>Preço: R$ {{ '%.2f' | format(barber.valor) }}</li>
-                                <li>Duração: {{ barber.duracao }} min</li>
-                              </ul>
-                        </ul>
+                  {% for nome, info in barbers.items() %}
+                          <p>Nome: {{ nome }}</p>
+                            <p>Serviços:</p>
+                            {% for servico in info.servicos %}
+                                 {% if not servico.servico %}
+                                        <p class="text">Este barbeiro ainda não tem nenhum serviço cadastrado.</p>
+                                 {% else %}
+                                    <ul>
+                                        <li> {{ servico.servico }}</li>
+                                    </ul>
+                                 {% endif %}
+                            {% endfor %}
+                      <a href="{{ url_for('barber.view_barber_detail', barber_id=info.id) }}" class="btn btn-primary">Ver Detalhes</a>
+                      <p></p>
                   {% endfor %}
        {% endif %}
     <a href="{{ url_for('local.view_local') }}" class="btn btn-secondary mt-3">Voltar</a>
